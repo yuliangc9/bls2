@@ -82,7 +82,7 @@ void msg_decode(RtmpProtocol *protocol)
 
     if (!worker.available)
     {
-        CLIENT_WARNING(protocol->client, "ignore this message. type: 0x%2x",
+        CLIENT_WARNING(protocol->client, "ignore this message. type: {0:x}",
                 protocol->current_channel->header.type);
     }
     else
@@ -98,7 +98,7 @@ void msg_command_message_amf0_decode(bls_message_t &msg)
     if (msg.channel.header.msg_len > msg.protocol->client->node_buf_len)
     {
         CLIENT_WARNING(msg.protocol->client,
-                "this message len: %lu exceed the max buffer len. max: %lu",
+                "this message len: {} exceed the max buffer len. max: {}",
                 msg.channel.header.msg_len, msg.protocol->client->node_buf_len);
 
         msg.protocol->client->close();
@@ -144,7 +144,7 @@ void msg_window_acknowledgement_size_decode(bls_message_t &msg)
 
     msg.protocol->window_size = read_4bytes(b->payload_start_p);
 
-    CLIENT_DEBUG(msg.protocol->client, "peer set window size %u success",
+    CLIENT_DEBUG(msg.protocol->client, "peer set window size {} success",
             msg.protocol->window_size);
 }
 
@@ -161,13 +161,13 @@ void msg_set_chunk_size_decode(bls_message_t &msg)
             (new_size < DEFAULT_CHUNK_BUCKET_SIZE && DEFAULT_CHUNK_BUCKET_SIZE % new_size))
     {
         CLIENT_NOTICE(msg.protocol->client,
-                "recv set chunk size msg %u, close it!", new_size);
+                "recv set chunk size msg {}, close it!", new_size);
         msg.protocol->client->close();
     }
     else
     {
         CLIENT_NOTICE(msg.protocol->client,
-                "recv set chunk size msg %u, do it!", new_size);
+                "recv set chunk size msg {}, do it!", new_size);
         msg.protocol->client->chunk_size = new_size;
     }
 
@@ -181,7 +181,7 @@ void msg_user_control_message_decode(bls_message_t &msg)
 
     uint16_t event_type = read_2bytes(b->payload_start_p);
 
-    CLIENT_TRACE(msg.protocol->client, "get user control msg. type: %u",event_type);
+    CLIENT_TRACE(msg.protocol->client, "get user control msg. type: {}",event_type);
     switch (event_type)
     {
     case 6:
@@ -286,8 +286,8 @@ void msg_video_decode(bls_message_t &msg)
     if (chunk_is_keyframe(head_chunk))
     {
         CLIENT_TRACE(msg.protocol->client,
-                "get a video frame. is_sh: %s ts: %u size: %u"
-                " total_size: %lu total_video_msg: %lu total_audio_msg: %lu",
+                "get a video frame. is_sh: {} ts: {} size: {}"
+                " total_size: {} total_video_msg: {} total_audio_msg: {}",
                 chunk_is_video_sh(head_chunk) ? "true" : "false",
                 msg.channel.header.timestamp, msg.channel.header.msg_len,
                 msg.protocol->total_recved_size, msg.protocol->total_recved_video_msg,
@@ -296,7 +296,7 @@ void msg_video_decode(bls_message_t &msg)
     else
     {
         CLIENT_DEBUG(msg.protocol->client,
-                "get a video frame. ts: %u size: %u",
+                "get a video frame. ts: {} size: {}",
                 msg.channel.header.timestamp, msg.channel.header.msg_len);
     }
 
@@ -330,14 +330,14 @@ void msg_audio_decode(bls_message_t &msg)
     if (chunk_is_audio_sh(chunk))
     {
         CLIENT_TRACE(msg.protocol->client,
-                "get audio sequence header. ts: %u size: %u data: %x",
+                "get audio sequence header. ts: {} size: {} data: {}",
                 msg.channel.header.timestamp, msg.channel.header.msg_len,
                 *chunk->payload_start_p);
     }
     else
     {
         CLIENT_DEBUG(msg.protocol->client,
-                "get audio frame. ts: %u size: %u data: %x",
+                "get audio frame. ts: {} size: {} data: {}",
                 msg.channel.header.timestamp, msg.channel.header.msg_len,
                 *chunk->payload_start_p);
     }
@@ -366,7 +366,7 @@ void msg_msg_data_message_amf0_decode(bls_message_t &msg)
 {
     RtmpClient *client = msg.protocol->client;
 
-    CLIENT_NOTICE(msg.protocol->client, "get a metadata. ts: %u size: %u",
+    CLIENT_NOTICE(msg.protocol->client, "get a metadata. ts: {} size: {}",
             msg.channel.header.timestamp, msg.channel.header.msg_len);
 
     //反馈给nodejs,同时拿到metadata的完整buffer

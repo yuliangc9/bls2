@@ -50,14 +50,14 @@ void close_bls_logger();
 #define SYS_FATAL(fmt, args...) FATAL("[SYSTEM]" fmt, ##args)
 
 #define CLIENT_DEBUG(client, fmt, args...) \
-    DEBUG_LOG("[%s] " fmt, client->id, ##args)
+    DEBUG_LOG("[{}] " fmt, client->id, ##args)
 #define CLIENT_TRACE(client, fmt, args...) \
-    TRACE("[%s] " fmt, client->id, ##args)
+    TRACE("[{}] " fmt, client->id, ##args)
 #define CLIENT_NOTICE(client, fmt, args...) \
-    NOTICE("[%s] " fmt, client->id, ##args)
+    NOTICE("[{}] " fmt, client->id, ##args)
 #define CLIENT_WARNING(client, fmt, args...) \
-    WARNING("[%s] " fmt, client->id, ##args)
+    WARNING("[{}] " fmt, client->id, ##args)
 #define CLIENT_FATAL(client, fmt, args...) \
-    FATAL("[%s] " fmt, client->id, ##args)
+    FATAL("[{}] " fmt, client->id, ##args)
 
 #endif /* BLSLOGGER_H_ */

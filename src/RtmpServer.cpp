@@ -25,7 +25,7 @@ void on_new_connection(uv_stream_t *server, int status)
 
     if (status)
     {
-        SYS_WARNING("get a new client error. status %d error: %s",
+        SYS_WARNING("get a new client error. status {} error: {}",
                 status, uv_err_name(status));
         return;
     }
@@ -67,12 +67,12 @@ int RtmpServer::start()
 
     if (listen_result)
     {
-        SYS_FATAL("can not listen port %d. err: %s",
+        SYS_FATAL("can not listen port {}. err: {}",
                 port, uv_err_name(listen_result));
         return -1;
     }
 
-    SYS_NOTICE("rtmp server start to listen port %d", port);
+    SYS_NOTICE("rtmp server start to listen port {}", port);
 
     return 0;
 }
@@ -104,7 +104,7 @@ void RtmpServer::accept_client()
     }
     else
     {
-        SYS_WARNING("accept new client fail. error: %s",
+        SYS_WARNING("accept new client fail. error: {}",
                 uv_err_name(-1));
         bls_close_tcp(client);
 

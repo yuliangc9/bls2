@@ -40,8 +40,8 @@ int rtmp_write_chunk(BlsSocket *s, chunk_bucket_t *b, custom_write_cb cb,
     ++(b->ref_count);
 
     CLIENT_DEBUG(((RtmpClient *)s->bls_client),
-            "send data to client. bucket_id: %u ref: %u"
-            " buf1_len: %lu, buf2_len: %lu want %lu %lu",
+            "send data to client. bucket_id: {} ref: {}"
+            " buf1_len: {}, buf2_len: {} want {} {}",
             b->bucket_id, b->ref_count, ((uv_buf_t *)b)->len,
             (((uv_buf_t *)b)+1)->len,
             b->header_length, b->payload_length);
@@ -74,7 +74,7 @@ int rtmp_write_chunk_header(BlsSocket *s, chunk_bucket_t *b)
 
     CLIENT_DEBUG(((RtmpClient *)s->bls_client),
             "send chunk header to client. "
-            "bucket_id: %uref: %u buf1_len: %lu",
+            "bucket_id: {} ref: {} buf1_len: {}",
             b->bucket_id, b->ref_count, ((uv_buf_t *)b)->len);
 
     uv_write_t *temp_req = (uv_write_t *) bls_malloc(sizeof(uv_write_t));
@@ -89,7 +89,7 @@ int rtmp_write_chunk_payload(BlsSocket *s, chunk_bucket_t *b)
 
     CLIENT_DEBUG(((RtmpClient *)s->bls_client),
             "send chunk payload to client. "
-            "bucket_id: %u ref: %u buf2_len: %lu",
+            "bucket_id: {} ref: {} buf2_len: {}",
             b->bucket_id, b->ref_count, (((uv_buf_t *)b) + 1)->len);
 
     uv_write_t *temp_req = (uv_write_t *) bls_malloc(sizeof(uv_write_t));
@@ -103,7 +103,7 @@ void _bucket_write_cb(uv_write_t *req, int status)
     chunk_bucket_t *b = (chunk_bucket_t *) req->data;
 
     SYS_DEBUG("write bucket cb. "
-            "status %d, bucket_id: %u ref: %u len1: %u len2: %u",
+            "status {}, bucket_id: {} ref: {} len1: {} len2: {}",
             status, b->bucket_id, b->ref_count,
             b->header_length, b->payload_length);
 
@@ -116,8 +116,8 @@ void _custom_bucket_write_cb(uv_write_t *req, int status)
 {
     custom_write_data_t *custom_data = (custom_write_data_t *) req->data;
 
-    SYS_DEBUG("custom write bucket cb. status %d, "
-            "bucket_id: %u ref: %u len1: %u len2: %u",
+    SYS_DEBUG("custom write bucket cb. status {}, "
+            "bucket_id: {} ref: {} len1: {} len2: {}",
             status, custom_data->chunk->bucket_id,
             custom_data->chunk->ref_count,
             custom_data->chunk->header_length,
@@ -147,14 +147,14 @@ void add_pool_queue(size_t payload_size, size_t add_size)
     if (g_add_pool_count >= MAX_ADD_POOL_SIZE_COUNT)
     {
         SYS_FATAL("add too much space to pool, it is not allowed. "
-                "count: %d payload_size: %lu pool_size: %lu",
+                "count: {} payload_size: {} pool_size: {}",
                 MAX_ADD_POOL_SIZE_COUNT, g_payload_size, g_pool_size
         );
         return;
     }
 
     SYS_NOTICE("try to add new chunk queue in pool. "
-            "payload_size: %lu pool_size: %lu",
+            "payload_size: {} pool_size: {}",
             payload_size, add_size);
 
     n_queue = (pool_queue_t *) bls_malloc(sizeof(pool_queue_t));
@@ -211,7 +211,7 @@ int init_chunk_pool(size_t payload_size, size_t pool_size)
 
     add_pool_queue(payload_size, pool_size);
 
-    SYS_NOTICE("init chunk pool success! payload_size: %lu pool_size: %lu",
+    SYS_NOTICE("init chunk pool success! payload_size: {} pool_size: {}",
             payload_size, pool_size);
 
     return 0;
@@ -242,8 +242,8 @@ chunk_bucket_t *alloc_chunk_bucket()
     g_valid_chunk_num --;
 
     SYS_DEBUG("get a chunk bucket from pool queue. "
-            "bucket_id: %u p: %p pre: %p next: %p "
-            "available chunk num: %lu",
+            "bucket_id: {} p: {} pre: {} next: {} "
+            "available chunk num: {}",
             b->bucket_id, &b->queue, b->queue.prev, b->queue.next,
             g_valid_chunk_num);
 
@@ -253,7 +253,7 @@ chunk_bucket_t *alloc_chunk_bucket()
 void free_chunk_bucket(chunk_bucket_t *bucket)
 {
     SYS_DEBUG("before bucket collect back to pool. "
-            "bucket_id: %u ref: %u p: %p pre: %p next: %p",
+            "bucket_id: {} ref: {} p: {} pre: {} next: {}",
             bucket->bucket_id, bucket->ref_count, &bucket->queue,
             bucket->queue.prev, bucket->queue.next);
 
@@ -272,8 +272,8 @@ void free_chunk_bucket(chunk_bucket_t *bucket)
     g_valid_chunk_num ++;
 
     SYS_DEBUG("bucket collect back to pool. "
-            "bucket_id: %u p: %p pre: %p next: %p "
-            "available chunk num: %lu",
+            "bucket_id: {} p: {} pre: {} next: {} "
+            "available chunk num: {}",
             bucket->bucket_id, &bucket->queue,
             bucket->queue.prev, bucket->queue.next,
             g_valid_chunk_num);

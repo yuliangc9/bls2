@@ -62,7 +62,7 @@ void BlsSource::add_consumer(bls_consumer_t *consumer)
 
         //发送视频metadata
         CLIENT_TRACE(consumer->client, "wrap metadata and send."
-                "msg_len: %u stream_id: %u",
+                "msg_len: {} stream_id: {}",
                 key_cache.metadata->header.msg_len, consumer->stream_id);
         wrap_chunk_header(consumer->metadata_chunk_header, 0,
                 meta_chunk->chunk_id, 0, key_cache.metadata->header.msg_len,
@@ -70,7 +70,7 @@ void BlsSource::add_consumer(bls_consumer_t *consumer)
         rtmp_write_chunk_header(consumer->client->bls_socket,
                 consumer->metadata_chunk_header);
 
-        CLIENT_TRACE(consumer->client, "send metadata with absTime: %.2f",
+        CLIENT_TRACE(consumer->client, "send metadata with absTime: {}",
                 key_cache.gop->header.timestamp + source->abs_record_time);
 
         source->update_abs_record_time(key_cache.gop->header.timestamp);
@@ -82,7 +82,7 @@ void BlsSource::add_consumer(bls_consumer_t *consumer)
 
         //发送video sequence header
         CLIENT_TRACE(consumer->client, "wrap video sequence header and send."
-                "msg_len: %u stream_id: %u",
+                "msg_len: {} stream_id: {}",
                 key_cache.video_sh->header.msg_len, consumer->stream_id);
         wrap_chunk_header(consumer->first_video_chunk_header, 0,
                 consumer->video_chunk_id, 0,
@@ -99,7 +99,7 @@ void BlsSource::add_consumer(bls_consumer_t *consumer)
 
             //发送audio sequence header
             CLIENT_TRACE(consumer->client, "wrap audio sequence header and send."
-                    "msg_len: %u stream_id: %u",
+                    "msg_len: {} stream_id: {}",
                     key_cache.audio_sh->header.msg_len, consumer->stream_id);
 
             wrap_chunk_header(consumer->first_audio_chunk_header, 0,
@@ -186,7 +186,7 @@ void BlsSource::on_video_msg(rtmp_channel_t *channel)
 
     if (chunk_is_video_sh(chunk))
     {
-        SYS_DEBUG("cache video sh for %s", stream_name.c_str());
+        SYS_DEBUG("cache video sh for {}", stream_name.c_str());
 
         bls_delete(key_cache.video_sh);
 
@@ -208,7 +208,7 @@ void BlsSource::on_audio_msg(rtmp_channel_t *channel)
 
     if (chunk_is_audio_sh(chunk))
     {
-        SYS_DEBUG("cache audio sh for %s", stream_name.c_str());
+        SYS_DEBUG("cache audio sh for {}", stream_name.c_str());
 
         bls_delete(key_cache.audio_sh);
 
@@ -317,7 +317,7 @@ void BlsSource::find_abs_time_in_metadata()
             temp_time = read_8bytes((uint8_t *) (metadata_buf + i + 14));
             memcpy(&abs_record_time, &temp_time, 8);
 
-            NOTICE("get abs record time in meta data for %s. %.2f",
+            NOTICE("get abs record time in meta data for {}. {}",
                     stream_name.c_str(), abs_record_time);
 
             break;
@@ -326,14 +326,14 @@ void BlsSource::find_abs_time_in_metadata()
 
     if (time_index == 0)
     {
-        WARNING("can not find abs record time in meta data for %s",
+        WARNING("can not find abs record time in meta data for {}",
                 stream_name.c_str());
     }
 }
 
 void BlsSource::on_metadata(rtmp_channel_t *channel, uint8_t *buffer)
 {
-    SYS_TRACE("cache metadata sh for %s", stream_name.c_str());
+    SYS_TRACE("cache metadata sh for {}", stream_name.c_str());
 
     if (NULL != key_cache.metadata)
     {
@@ -428,7 +428,7 @@ void change_channel_chunkid(rtmp_channel_t *channel, uint32_t new_id)
     chunk_bucket_t *b = NULL;
     uint32_t time_value = 0;
 
-    SYS_DEBUG("wrap channel chunkid to %u", new_id);
+    SYS_DEBUG("wrap channel chunkid to {}", new_id);
 
     ngx_queue_foreach(q, &(channel->chain.queue))
     {
@@ -484,7 +484,7 @@ source_bucket_t *apply_source()
 
 void collect_source(source_bucket_t *source)
 {
-    SYS_TRACE("collect publish source back to pool. stream_name: %s",
+    SYS_TRACE("collect publish source back to pool. stream_name: {}",
             source->source->stream_name.c_str());
 
     source->source->clear_consumer();
@@ -503,7 +503,7 @@ source_bucket_t *get_publish_source(std::string stream_name)
     c = g_source_map.find(stream_name);
     if (c != g_source_map.end())
     {
-        SYS_WARNING("hehe! find old source in g_map! stream: %s",
+        SYS_WARNING("hehe! find old source in g_map! stream: {}",
                 stream_name.c_str());
 
         return NULL;
@@ -519,7 +519,7 @@ source_bucket_t *get_publish_source(std::string stream_name)
         s->source->stream_name = stream_name;
     }
 
-    SYS_TRACE("get publish source from pool. stream_name: %s",
+    SYS_TRACE("get publish source from pool. stream_name: {}",
             stream_name.c_str());
 
     s->source->is_publishing = true;
@@ -534,13 +534,13 @@ source_bucket_t *get_play_source(string stream_name)
     c = g_source_map.find(stream_name);
     if (c != g_source_map.end())
     {
-        SYS_TRACE("get play source from pool. stream_name: %s",
+        SYS_TRACE("get play source from pool. stream_name: {}",
                 stream_name.c_str());
         return c->second;
     }
     else
     {
-        SYS_TRACE("there is no source for %s to play",
+        SYS_TRACE("there is no source for {} to play",
                 stream_name.c_str());
         return NULL;
     }

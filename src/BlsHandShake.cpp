@@ -48,7 +48,7 @@ void hs_expect_client_response(uv_stream_t* client, ssize_t nread, const uv_buf_
 
     if (nread < 0)
     {
-        CLIENT_WARNING(hs->rtmp_client, "hand shake fail. read C2 error: %s",
+        CLIENT_WARNING(hs->rtmp_client, "hand shake fail. read C2 error: {}",
                 uv_err_name(nread));
         HAND_SHAKE_FAIL(hs);
     }
@@ -77,7 +77,7 @@ void send_hs_server_response_cb(uv_buf_t *buf, void *data, int status)
 
     if (status < 0)
     {
-        CLIENT_WARNING(hs->rtmp_client, "hand shake fail. send server data error: %s",
+        CLIENT_WARNING(hs->rtmp_client, "hand shake fail. send server data error: {}",
                 uv_err_name(status));
         HAND_SHAKE_FAIL(hs);
     }
@@ -96,7 +96,7 @@ void hs_read_buffer(uv_stream_t* client, ssize_t nread, const uv_buf_t *buf)
 
     if (nread < 0)
     {
-        CLIENT_WARNING(hs->rtmp_client, "hand shake fail. read data error: %s",
+        CLIENT_WARNING(hs->rtmp_client, "hand shake fail. read data error: {}",
                 uv_err_name(nread));
         HAND_SHAKE_FAIL(hs);
     }

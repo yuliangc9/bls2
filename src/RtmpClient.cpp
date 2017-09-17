@@ -60,7 +60,7 @@ void __bls_read_n_read_cb(uv_stream_t* handle, ssize_t nread, const uv_buf_t *bu
     //如果接受数据失败，直接调用回调函数返回错误
     if (nread < 0)
     {
-        CLIENT_WARNING(bls_read_buf->client, "read data fail. %s",
+        CLIENT_WARNING(bls_read_buf->client, "read data fail. {}",
                 uv_err_name(nread));
         bls_read_buf->cb(bls_read_buf->buf, bls_read_buf->data, -1);
         return;
@@ -116,7 +116,7 @@ RtmpClient::RtmpClient(RtmpServer *server, uv_tcp_t *client)
     node_av_buf = (uint8_t *) malloc(2*1024*1024);
 #endif
 
-    CLIENT_NOTICE(this, "new rtmp client come. ip : %s", ip);
+    CLIENT_NOTICE(this, "new rtmp client come. ip : {}", ip);
 }
 
 RtmpClient::~RtmpClient()
@@ -307,7 +307,7 @@ void _remote_connect_cb(uv_connect_t* req, int status)
     }
     else
     {
-        SYS_TRACE("the remote server network is not reachable %s",
+        SYS_TRACE("the remote server network is not reachable {}",
                 uv_err_name(status));
 
         r_data->r_client->data = NULL;
@@ -345,7 +345,7 @@ void connect_remote_server(const char *ip, int port, Nan::Callback *data, bls_co
     uv_connect_t* req = (uv_connect_t *) malloc(sizeof(uv_connect_t));
     req->data = (void *) r_data;
 
-    SYS_TRACE("try to connect remote server. ip: %s port: %d", ip, port);
+    SYS_TRACE("try to connect remote server. ip: {} port: {}", ip, port);
 
     //uv_tcp_connect(req, r_client, address, _remote_connect_cb);
     uv_tcp_connect(req, r_client, (const struct sockaddr*)&addr, _remote_connect_cb);

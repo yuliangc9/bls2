@@ -312,7 +312,7 @@ void write_message_buf(const Nan::FunctionCallbackInfo<v8::Value>& info)
     }
 
     CLIENT_NOTICE(client, "nodejs send message to client."
-            " streamid: %u timestamp: %u typeid: 0x%2x chunk_id: %u",
+            " streamid: {} timestamp: {} typeid: {2:x} chunk_id: {}",
             stream_id, timestamp, type_id, chunk_id);
 
     encode_buf_to_chunk_chain(temp_chain, write_buf, buf_len, stream_id,
@@ -348,7 +348,7 @@ void publish_stream(const Nan::FunctionCallbackInfo<v8::Value>& info)
         return ;
     }
 
-    CLIENT_TRACE(client, "publish stream! stream_name: %s", stream_name.c_str());
+    CLIENT_TRACE(client, "publish stream! stream_name: {}", stream_name.c_str());
 
     source_bucket_t *source = get_publish_source(stream_name);
     if (NULL != source)
@@ -360,7 +360,7 @@ void publish_stream(const Nan::FunctionCallbackInfo<v8::Value>& info)
     }
     else
     {
-        CLIENT_WARNING(client, "publish error. no source for %s. close it! haha",
+        CLIENT_WARNING(client, "publish error. no source for {}. close it! haha",
                 stream_name.c_str());
 
         info.GetReturnValue().Set(Nan::New<Boolean>(false));
@@ -455,7 +455,7 @@ void play_stream(const Nan::FunctionCallbackInfo<v8::Value>& info)
         return ;
     }
 
-    CLIENT_TRACE(client, "play stream! stream_name: %s", stream_name.c_str());
+    CLIENT_TRACE(client, "play stream! stream_name: {}", stream_name.c_str());
 
     protocol->send_stream_begin();
 

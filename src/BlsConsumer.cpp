@@ -16,7 +16,7 @@
 bls_consumer_t* init_consumer(RtmpClient *client, std::string stream_name,
         uint32_t stream_id, uint32_t video_chunk_id, uint32_t audio_chunk_id)
 {
-    CLIENT_TRACE(client, "init consumer. stream_id: %u video_chunk_id: %u, audio_chunk_id: %u",
+    CLIENT_TRACE(client, "init consumer. stream_id: {} video_chunk_id: {}, audio_chunk_id: {}",
             stream_id, video_chunk_id, audio_chunk_id);
 
     bls_consumer_t *consumer = new bls_consumer_t();
@@ -68,7 +68,7 @@ void consumer_send_video(bls_consumer_t* consumer, chunk_bucket_t *chunk,
         chunk_header_t *chunk_header, av_buffer_t *buffer)
 {
     CLIENT_DEBUG(consumer->client, "try to dispatch video chunk to client."
-            " state: %d buffer_chunk: %u chunk_stream_name: %s source_stream_name: %s",
+            " state: {} buffer_chunk: {} chunk_stream_name: {} source_stream_name: {}",
             consumer->state, consumer->chunk_in_buffer_num,
             chunk->source_stream_name->c_str(), consumer->stream_name->c_str());
 
@@ -79,7 +79,7 @@ void consumer_send_video(bls_consumer_t* consumer, chunk_bucket_t *chunk,
     //直接转发视频帧
     case CONSUMER_RUN:
     case CONSUMER_WAIT_AUDIO_SH:
-        CLIENT_DEBUG(consumer->client, "dispatch video chunk to client. type: 0x%2x ts: %u",
+        CLIENT_DEBUG(consumer->client, "dispatch video chunk to client. type: {0:x} ts: {}",
                 chunk_header->type, chunk_header->timestamp);
 
         if (chunk->format != RTMP_CHUNK_FMT_TYPE3
@@ -88,13 +88,13 @@ void consumer_send_video(bls_consumer_t* consumer, chunk_bucket_t *chunk,
             consumer->state = CONSUMER_WAIT_VIDEO_SLOW_SPEED;
 
             CLIENT_WARNING(consumer->client, "this is a slow player. stop dispatch data. "
-                    "state: %d", consumer->state);
+                    "state: {}", consumer->state);
             return;
         }
 
         if (chunk_is_keyframe(chunk))
         {
-            CLIENT_TRACE(consumer->client, "dispatch key video frame to client. type: 0x%2x ts: %u len: %u",
+            CLIENT_TRACE(consumer->client, "dispatch key video frame to client. type: {0:x} ts: {} len: {}",
                     chunk_header->type, chunk_header->timestamp, chunk_header->msg_len);
         }
 
@@ -117,7 +117,7 @@ void consumer_send_video(bls_consumer_t* consumer, chunk_bucket_t *chunk,
 
             //发送视频metadata
             CLIENT_TRACE(consumer->client, "wrap metadata and send."
-                    "msg_len: %u stream_id: %u",
+                    "msg_len: {} stream_id: {}",
                     buffer->metadata->header.msg_len, consumer->stream_id);
             wrap_chunk_header(consumer->metadata_chunk_header, 0,
                     meta_chunk->chunk_id, 0, buffer->metadata->header.msg_len,
@@ -125,7 +125,7 @@ void consumer_send_video(bls_consumer_t* consumer, chunk_bucket_t *chunk,
             rtmp_write_chunk_header(consumer->client->bls_socket,
                     consumer->metadata_chunk_header);
 
-            CLIENT_TRACE(consumer->client, "send metadata with absTime: %.2f",
+            CLIENT_TRACE(consumer->client, "send metadata with absTime: {}",
                     chunk_header->timestamp + source->abs_record_time);
 
             source->update_abs_record_time(chunk_header->timestamp);
@@ -137,7 +137,7 @@ void consumer_send_video(bls_consumer_t* consumer, chunk_bucket_t *chunk,
 
             //发送video sequence header
             CLIENT_TRACE(consumer->client, "wrap video sequence header and send."
-                    "msg_len: %u stream_id: %u",
+                    "msg_len: {} stream_id: {}",
                     buffer->video_sh->header.msg_len, consumer->stream_id);
             wrap_chunk_header(consumer->first_video_chunk_header, 0,
                     consumer->video_chunk_id, 0,
@@ -173,7 +173,7 @@ void consumer_send_video(bls_consumer_t* consumer, chunk_bucket_t *chunk,
         {
             //发送video sequence header
             CLIENT_TRACE(consumer->client, "wrap video sequence header and send."
-                    "msg_len: %u stream_id: %u",
+                    "msg_len: {} stream_id: {}",
                     buffer->video_sh->header.msg_len, consumer->stream_id);
             wrap_chunk_header(consumer->first_video_chunk_header, 0,
                     consumer->video_chunk_id, 0,
@@ -229,7 +229,7 @@ void consumer_send_audio(bls_consumer_t* consumer, chunk_bucket_t *chunk,
         chunk_header_t *chunk_header, av_buffer_t *buffer)
 {
     CLIENT_DEBUG(consumer->client, "try to dispatch video chunk to client."
-            " state: %d buffer_chunk: %u chunk_stream_name: %s source_stream_name: %s",
+            " state: {} buffer_chunk: {} chunk_stream_name: {} source_stream_name: {}",
             consumer->state, consumer->chunk_in_buffer_num,
             chunk->source_stream_name->c_str(), consumer->stream_name->c_str());
 
@@ -249,7 +249,7 @@ void consumer_send_audio(bls_consumer_t* consumer, chunk_bucket_t *chunk,
                             : CONSUMER_WAIT_VIDEO_SLOW_SPEED;
 
             CLIENT_WARNING(consumer->client, "this is a slow player. stop dispatch data. "
-                    "state: %d", consumer->state);
+                    "state: {}", consumer->state);
 
             return;
         }
@@ -281,7 +281,7 @@ void consumer_send_audio(bls_consumer_t* consumer, chunk_bucket_t *chunk,
 
             //发送视频metadata
             CLIENT_TRACE(consumer->client, "wrap metadata and send."
-                    "msg_len: %u stream_id: %u",
+                    "msg_len: {} stream_id: {}",
                     buffer->metadata->header.msg_len, consumer->stream_id);
             wrap_chunk_header(consumer->metadata_chunk_header, 0,
                     meta_chunk->chunk_id, 0, buffer->metadata->header.msg_len,
@@ -289,7 +289,7 @@ void consumer_send_audio(bls_consumer_t* consumer, chunk_bucket_t *chunk,
             rtmp_write_chunk_header(consumer->client->bls_socket,
                     consumer->metadata_chunk_header);
 
-            CLIENT_TRACE(consumer->client, "send metadata with absTime: %.2f",
+            CLIENT_TRACE(consumer->client, "send metadata with absTime: {}",
                     chunk_header->timestamp + source->abs_record_time);
 
             source->update_abs_record_time(chunk_header->timestamp);
@@ -303,7 +303,7 @@ void consumer_send_audio(bls_consumer_t* consumer, chunk_bucket_t *chunk,
             if (NULL != buffer->audio_sh)
             {
                 CLIENT_TRACE(consumer->client, "wrap audio sequence header and send."
-                        "msg_len: %u stream_id: %u",
+                        "msg_len: {} stream_id: {}",
                         buffer->audio_sh->header.msg_len, consumer->stream_id);
                 wrap_chunk_header(consumer->first_audio_chunk_header, 0,
                         consumer->audio_chunk_id, 0,
@@ -337,7 +337,7 @@ void consumer_send_audio(bls_consumer_t* consumer, chunk_bucket_t *chunk,
         {
             //发送audio sequence header
             CLIENT_TRACE(consumer->client, "wrap audio sequence header and send."
-                    "msg_len: %u stream_id: %u",
+                    "msg_len: {} stream_id: {}",
                     buffer->audio_sh->header.msg_len, consumer->stream_id);
             wrap_chunk_header(consumer->first_audio_chunk_header, 0,
                     consumer->audio_chunk_id, 0,

@@ -33,9 +33,9 @@ void on_new_chunk(RtmpProtocol *p)
         return;
     }
 
-    CLIENT_DEBUG(p->client, "get a whole chunk. fmt: 0x%2x cid: %u"
-            " sid: %u ts: %u type: 0x%2x "
-            "msg_len: %u chunk_len: %u",
+    CLIENT_DEBUG(p->client, "get a whole chunk. fmt: 0x{:2x} cid: {}"
+            " sid: {} ts: {} type: 0x{:2x} "
+            "msg_len: {} chunk_len: {}",
             chunk->format, chunk->chunk_id,
             p->current_channel->header.stream_id,
             p->current_channel->header.timestamp, p->current_channel->header.type,
@@ -354,7 +354,7 @@ void chunk_state_machine(uint8_t *buf, void *data, int recved)
     //接收数据失败，断开连接
     if (recved < 0)
     {
-        CLIENT_TRACE(protocol->client, "client leave. err: %s",
+        CLIENT_TRACE(protocol->client, "client leave. err: {}",
                 uv_err_name(recved));
         //bls_delete(protocol);
         protocol->client->close();
@@ -455,7 +455,7 @@ void chunk_state_machine(uint8_t *buf, void *data, int recved)
                 if (chunk->format > 1)
                 {
                     CLIENT_WARNING(client,
-                            "recv chunk error. first chunk(id: %lu) fmt should not be %2x",
+                            "recv chunk error. first chunk(id: {}) fmt should not be {}",
                             chunk->chunk_id, chunk->format);
                     //bls_delete(protocol);
                     client->close();
@@ -486,7 +486,7 @@ void chunk_state_machine(uint8_t *buf, void *data, int recved)
                     protocol->current_chunk = last_b;
 
                     CLIENT_DEBUG(client,
-                            "merge chunk with recv len %lu",
+                            "merge chunk with recv len {}",
                             last_b->payload_recv_len);
 
                     last_b->state = CHUNK_STATE_READ_PAYLOAD;
@@ -502,7 +502,7 @@ void chunk_state_machine(uint8_t *buf, void *data, int recved)
             {
                 CLIENT_WARNING(client,
                         "recv chunk type error. "
-                        "chunk_id: %lu msg_len: %u recv_len: %u fmt: %2x",
+                        "chunk_id: {} msg_len: {} recv_len: {} fmt: {:2x}",
                         chunk->chunk_id, p_channel->header.msg_len,
                         p_channel->header.msg_recv, chunk->format);
                 //bls_delete(protocol);
@@ -662,7 +662,7 @@ void wrap_chunk_header(chunk_bucket_t *b, uint8_t fmt, uint32_t chunk_id,
     bool need_ext_timestamp = false;
     uint8_t *temp_p;
 
-    DEBUG_LOG("wrap chunk header. fmt: 0x%2x cid: %u ts: %u len: %u typeid: 0x%2x msgid: %u",
+    DEBUG_LOG("wrap chunk header. fmt: 0x{:2x} cid: {} ts: {} len: {} typeid: 0x{:2x} msgid: {}",
             fmt, chunk_id, timestamp, msg_len, type_id, msg_id);
 
     //写fmt
@@ -686,7 +686,7 @@ void wrap_chunk_header(chunk_bucket_t *b, uint8_t fmt, uint32_t chunk_id,
     }
     else
     {
-        WARNING("chunk id is too big. id: %lu", chunk_id);
+        WARNING("chunk id is too big. id: {}", chunk_id);
         return;
     }
 
@@ -765,7 +765,7 @@ void encode_buf_to_chunk_chain(chunk_chain_t &chain, uint8_t *buf, size_t len,
     {
         remain_len -= DEFAULT_CHUNK_BUCKET_SIZE;
 
-        DEBUG_LOG("encode one more chunk for this message. remain_len: %u len: %u",
+        DEBUG_LOG("encode one more chunk for this message. remain_len: {} len: {}",
                 remain_len, len);
 
         //一个message拆分成多个chunk，除了第一个chunk，后续的chunk的fmt都是3
