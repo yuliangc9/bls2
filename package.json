@@ -1,0 +1,38 @@
+{
+  "contributors": [
+    {
+      "name": "chenyuliang",
+      "email": "yuliangc9@gmail.com"
+    }
+  ],
+  "dependencies": {
+    "nan": "2.5.1",
+    "node-amfutils": "0.0.1"
+  },
+  "description": "a rtmp server framework",
+  "keywords": [
+    "cluster",
+    "edge",
+    "framework",
+    "pull",
+    "push",
+    "rtmp"
+  ],
+  "license": "MIT",
+  "main": "./bls.js",
+  "maintainers": [
+    {
+      "name": "sssjszz",
+      "email": "yuliangc9@gmail.com"
+    }
+  ],
+  "name": "bls",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yuliangc9/bls2.git"
+  },
+  "scripts": {
+    "install": "node-gyp rebuild"
+  },
+  "version": "1.1.1"
+}
