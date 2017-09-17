@@ -1,8 +1,12 @@
 ##TODO List
 
-- [BUG]fix bug of using spdlog. Now BLS can not print log info with correct arguments.
-
 ##History
+
+###2017.09.17 V1.2.0
+
+--------------
+
+fix bug of using spdlog
 
 ###2017.02.10 V1.1.0
 
